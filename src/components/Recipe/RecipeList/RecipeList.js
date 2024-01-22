@@ -8,11 +8,14 @@ import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Lottie from 'react-lottie';
 import emptyLottie from '../../../assets/emptyLottie.json';
+import Modal from '../../Common/Modal/Modal';
+import RecipeAdd from '../RecipeAdd/RecipeAdd';
 
 const RecipeList = () => {
   const { recipes } = useContext(LocalStorageContext);
 
   const [isSideModalOpen, setIsSideModalOpen] = useState(false);
+  const [showAddNewRecipeModal, setShowAddNewRecipeModal] = useState(false);
 
   const closeSideModal = () => {
     setIsSideModalOpen(false);
@@ -22,11 +25,20 @@ const RecipeList = () => {
     setIsSideModalOpen(true);
   };
 
+  const closeAddNewModal = () => {
+    setShowAddNewRecipeModal(false);
+  };
+
+  const openAddNewModal = () => {
+    setShowAddNewRecipeModal(true);
+  };
+
   const renderAddNewRecipeButton = () => (
     <Button
       variant="contained"
       startIcon={<AddIcon />}
-      sx={{ height: '42px', margin: 'auto 0', backgroundColor: '#6366f1' }}>
+      sx={{ height: '42px', margin: 'auto 0', backgroundColor: '#6366f1' }}
+      onClick={openAddNewModal}>
       Add New Recipe
     </Button>
   );
@@ -69,6 +81,12 @@ const RecipeList = () => {
       <SideDrawer isSideModalOpen={isSideModalOpen} onClose={closeSideModal}>
         asacs
       </SideDrawer>
+
+      {showAddNewRecipeModal && (
+        <Modal showModal closeModal={closeAddNewModal}>
+          <RecipeAdd />
+        </Modal>
+      )}
     </>
   );
 };

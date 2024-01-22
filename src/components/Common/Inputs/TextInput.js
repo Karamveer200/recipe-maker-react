@@ -1,20 +1,24 @@
 const TextInput = ({
-  label = '',
-  setValue,
+  label,
+  onChange,
   value = '',
   type = 'text',
   placeholder = '',
+  name = '',
   disabled = false
 }) => {
   return (
     <div>
-      <label className="block text-xxs sm:text-sm md:text-base font-medium leading-6 pinkWhiteText MontserratFamily">
-        {label}
-      </label>
-      <div className="mt-1 sm:mt-2">
+      {label && (
+        <label className="block text-xxs sm:text-sm md:text-base leading-6 pinkWhiteText MontserratFamily font-semibold">
+          {label}
+        </label>
+      )}
+      <div className="mt-2">
         <input
+          name={name}
           type={type}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={onChange}
           value={value}
           disabled={disabled}
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset

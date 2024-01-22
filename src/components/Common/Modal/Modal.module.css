@@ -3,6 +3,19 @@
 }
 
 .root > div:nth-child(2) {
-  border-radius: 10px;
-  background: #ffffff;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  padding: 0 !important;
+  width: 600px !important;
+  height: fit-content !important;
+}
+
+.root > div:nth-child(2) > span::before,
+.root > div:nth-child(2) > span::after {
+  background: #ffffff !important;
+}
+.root > div:nth-child(2) > span {
+  width: 20px !important;
+  height: 20px !important;
+  top: 13px !important;
 }
