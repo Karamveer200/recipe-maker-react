@@ -20,9 +20,11 @@
   letter-spacing: 2px;
 }
 
-button {
+button,
+p {
   font-family: 'Montserrat', cursive !important;
   letter-spacing: 2px !important;
+  color: #fff !important;
 }
 
 html,
