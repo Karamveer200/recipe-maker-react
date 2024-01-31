@@ -33,3 +33,7 @@ export const parseLocalStorageToArray = (key) => {
     console.log(error);
   }
 };
+
+export const isArrayReady = (arr) => {
+  return isArray(arr) ? arr : [];
+};

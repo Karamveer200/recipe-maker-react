@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import { LOCAL_STORAGE_KEYS } from '../utils/constants';
 import { parseLocalStorageToArray } from '../utils/helperFunctions';
 
@@ -8,20 +8,18 @@ export const LocalStorageContext = createContext();
 const LocalStorageContextComponent = (props) => {
   const [recipes, setRecipes] = useState([]);
 
-  const addNewRecipe = ({ name, ingredients, directions }) => {
-    const existingRecipes = parseLocalStorageToArray(LOCAL_STORAGE_KEYS.RECIPES);
+  useEffect(() => {
+    const getAllRecipes = parseLocalStorageToArray(LOCAL_STORAGE_KEYS.RECIPES);
 
-    console.log('existingRecipes before - ', existingRecipes);
+    if (getAllRecipes?.length) setRecipes(getAllRecipes);
+  }, []);
 
-    const newRecipe = {
-      name,
-      ingredients,
-      directions
-    };
+  const addNewRecipe = (val) => {
+    const getAllRecipes = parseLocalStorageToArray(LOCAL_STORAGE_KEYS.RECIPES);
+    const payload = [...getAllRecipes, val];
+    localStorage.setItem(LOCAL_STORAGE_KEYS.RECIPES, JSON.stringify(payload));
 
-    existingRecipes.push(newRecipe);
-
-    console.log('existingRecipes after - ', existingRecipes);
+    setRecipes(payload);
   };
 
   return (

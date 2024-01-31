@@ -5,7 +5,9 @@ const TextInput = ({
   type = 'text',
   placeholder = '',
   name = '',
-  disabled = false
+  isTextArea = false,
+  disabled = false,
+  isInvalid = false
 }) => {
   return (
     <div>
@@ -15,17 +17,42 @@ const TextInput = ({
         </label>
       )}
       <div className="mt-2">
-        <input
-          name={name}
-          type={type}
-          onChange={onChange}
-          value={value}
-          disabled={disabled}
-          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+        {isTextArea ? (
+          <textarea
+            name={name}
+            type={type}
+            onChange={onChange}
+            value={value}
+            disabled={disabled}
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
            ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 
             text-xxs sm:text-sm md:text-base sm:leading-6 pl-2 sm:pl-4 outline-none MontserratFamily"
-          placeholder={placeholder}
-        />
+            placeholder={placeholder}
+            style={{
+              minHeight: '155px',
+              ...(isInvalid && {
+                border: `2px solid #ef0000`
+              })
+            }}
+          />
+        ) : (
+          <input
+            name={name}
+            type={type}
+            onChange={onChange}
+            value={value}
+            disabled={disabled}
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+           ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 
+            text-xxs sm:text-sm md:text-base sm:leading-6 pl-2 sm:pl-4 outline-none MontserratFamily"
+            placeholder={placeholder}
+            style={{
+              ...(isInvalid && {
+                border: `2px solid #ef0000`
+              })
+            }}
+          />
+        )}
       </div>
     </div>
   );

@@ -8,9 +8,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Scrollbar } from 'react-scrollbars-custom';
 import classes from './Table.module.css';
-import { ARRAY_KEYS, HEDERA_API_KEYS, ZERO } from '../../../utils/constants';
+import { ARRAY_KEYS } from '../../../utils/constants';
 import Spinner from '../Spinner/Spinner';
 import { isArray, isArrayReady } from '../../../utils/helperFunctions';
 
@@ -37,58 +36,24 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: '#111827'
   },
 
+  '&:hover': {
+    backgroundColor: '#441f79',
+    cursor: 'pointer',
+    transition: 'all 100ms ease-in'
+  },
+
   // hide last border
   '&:last-child td, &:last-child th': {
     border: 0
   }
 }));
 
-const TableData = ({
-  headers = [],
-  bodyData = [],
-  isFetching = false,
-  insideSidebar,
-  userAccountId,
-  setLocalUserAccountId = () => {}
-}) => {
+const TableData = ({ headers = [], bodyData = [], isFetching = false, onRowClick }) => {
   const isDataFound = isArray(bodyData);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const value = e.target[ZERO].value;
-
-    setLocalUserAccountId(value);
-  };
-
-  const InputSearch = () => (
-    <form onSubmit={handleSubmit}>
-      <input
-        className="h-8 text-base pl-5 w-full border-1 rounded-sm mb-5 MontserratFamily font-semibold"
-        placeholder="Enter User account id"
-        defaultValue={userAccountId}
-      />
-    </form>
-  );
 
   if (isFetching) return <Spinner center />;
 
   const Wrapper = ({ children }) => {
-    if (insideSidebar) {
-      return (
-        <Scrollbar className={`${classes.removeInset} h-full w-full`}>
-          <>
-            <InputSearch />
-            {isDataFound && (
-              <div className="text-sm text-white px-2 pb-1 MontserratFamily font-bold">
-                Showing last 50 transactions -{' '}
-              </div>
-            )}
-            {children}
-          </>
-        </Scrollbar>
-      );
-    }
-
     return <>{children}</>;
   };
 
@@ -119,13 +84,16 @@ const TableData = ({
                 const rowsArray = Object.keys(row);
 
                 return (
-                  <StyledTableRow key={index}>
+                  <StyledTableRow key={index} onClick={() => onRowClick?.(row)}>
                     {isArrayReady(rowsArray)?.map((item, rowIndex) => {
                       if (item === ARRAY_KEYS.DISPLAY_FN) {
-                        const displayFn = row[ARRAY_KEYS.DISPLAY_FN];
+                        const displayFn = row[ARRAY_KEYS.DISPLAY_FN]?.component;
 
                         return (
-                          <StyledTableCell align="center" key={rowIndex}>
+                          <StyledTableCell
+                            align="center"
+                            key={rowIndex}
+                            className={` ${classes.borders} ${classes.fontSize14}`}>
                             {displayFn}
                           </StyledTableCell>
                         );
@@ -136,12 +104,7 @@ const TableData = ({
                         <StyledTableCell
                           align="center"
                           key={rowIndex}
-                          className={`${
-                            dataText === HEDERA_API_KEYS.FAILED && 'bg-red-700 text-white'
-                          } ${
-                            dataText === HEDERA_API_KEYS.SUCCESS &&
-                            'bg-green-700 text-white font-bold'
-                          }  ${classes.borders} ${classes.fontSize14}`}>
+                          className={` ${classes.borders} ${classes.fontSize14}`}>
                           {dataText}
                         </StyledTableCell>
                       );
