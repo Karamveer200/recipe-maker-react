@@ -103,7 +103,6 @@ const RecipeList = () => {
     return <TableData headers={headers} bodyData={bodyData} onRowClick={onRowClick}></TableData>;
   };
 
-
   return (
     <>
       <BodyContainer
