@@ -6,6 +6,7 @@ export const LOCAL_STORAGE_KEYS = {
 
 export const RECIPE_FORM_KEYS = {
   RECIPE_NAME: 'recipeName',
+  RECIPE_ID: 'recipeId',
   INGREDIENTS: 'ingredients',
   DESCRIPTION: 'description',
   NAME: 'name',

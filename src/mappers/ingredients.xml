@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ingredients">  
+    <insert id="insertIngredients">
+        INSERT INTO recipes_maker.INGREDIENTS
+        (
+            recipe_id, 
+            name,
+            quantity                                                      
+        )	
+        VALUES	                                              
+        <foreach collection="ingredients" item="ingredient" separator=",">
+            (
+                #{recipe_id},
+                #{ingredient.name},
+                #{ingredient.quantity}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectAllRecipes">
+        SELECT * 
+        FROM recipes_maker.RECIPE
+        ORDER by updated_at DESC
+    </select>    
+</mapper>

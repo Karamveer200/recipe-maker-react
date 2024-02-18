@@ -15,9 +15,21 @@
         RETURNING recipe_id as recipe_id 
     </insert>
 
-    <select id="selectAllRecipes">
-        SELECT * 
-        FROM recipes_maker.RECIPE
-        ORDER by updated_at DESC
+    <select id="selectAllRecipesWithIngredients">
+        SELECT
+            R.recipe_id,
+            R.title,
+            R.description,
+            R.created_at,
+            R.updated_at,
+            I.ingredient_id,
+            I.name as ingredient_name,
+            I.quantity
+        FROM
+            recipes_maker.recipe R
+        LEFT JOIN recipes_maker.ingredients I ON R.recipe_id = I.recipe_id
+        ORDER BY
+            R.updated_at DESC, R.recipe_id, I.ingredient_id;
+
     </select>    
 </mapper>

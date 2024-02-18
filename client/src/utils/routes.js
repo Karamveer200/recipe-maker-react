@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 
-const Landing = lazy(() => import('../components/Pages/Landing/Index'));
+const Landing = lazy(() => import('../Pages/Landing/Index'));
 
 export const ALL_ROUTES_PATHS = {
   LANDING: '/'

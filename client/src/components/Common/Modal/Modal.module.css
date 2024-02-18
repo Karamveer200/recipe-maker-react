@@ -2,6 +2,7 @@
   background: transparent !important;
 }
 
+.unsavedRoot > div:nth-child(2),
 .root > div:nth-child(2) {
   border-radius: 10px !important;
   background: #ffffff !important;
@@ -10,12 +11,19 @@
   height: fit-content !important;
 }
 
+.unsavedRoot > div:nth-child(2) > span::before,
+.unsavedRoot > div:nth-child(2) > span::after,
 .root > div:nth-child(2) > span::before,
 .root > div:nth-child(2) > span::after {
   background: #ffffff !important;
 }
+.unsavedRoot > div:nth-child(2) > span,
 .root > div:nth-child(2) > span {
   width: 20px !important;
   height: 20px !important;
   top: 13px !important;
+}
+
+.unsavedRoot > div:nth-child(2) {
+  width: 450px !important;
 }

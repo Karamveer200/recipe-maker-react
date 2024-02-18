@@ -51,7 +51,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const TableData = ({ headers = [], bodyData = [], isFetching = false, onRowClick }) => {
   const isDataFound = isArray(bodyData);
 
-  if (isFetching) return <Spinner center />;
+  if (isFetching)
+    return (
+      <div style={{ width: '-webkit-fill-available' }} className="mt-[100px] flex justify-center">
+        <Spinner center />
+      </div>
+    );
 
   const Wrapper = ({ children }) => {
     return <>{children}</>;

@@ -1,24 +1,55 @@
-/* eslint-disable no-unused-vars */
-import { useState, useContext } from 'react';
-import BodyContainer from '../../Common/BodyContainer/BodyContainer';
-import SideDrawer from '../../Common/SideDrawer/SideDrawer';
-import { LocalStorageContext } from '../../../context/LocalStorageContext';
+import { useState } from 'react';
+import { useQueryClient } from 'react-query';
+import BodyContainer from '../Common/BodyContainer/BodyContainer';
+import SideDrawer from '../Common/SideDrawer/SideDrawer';
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Lottie from 'react-lottie';
-import emptyLottie from '../../../assets/emptyLottie.json';
-import Modal from '../../Common/Modal/Modal';
-import RecipeAdd from '../RecipeAdd/RecipeAdd';
-import TableData from '../../Common/Table/Table';
-import { ARRAY_KEYS, RECIPE_FORM_KEYS } from '../../../utils/constants';
-import { isArrayReady } from '../../../utils/helperFunctions';
+import emptyLottie from '../../assets/emptyLottie.json';
+import Modal from '../Common/Modal/Modal';
+import UnsavedChangesModal from '../Common/Modal/UnsavedChangesModal';
+import RecipeAdd from './RecipeAdd/RecipeAdd';
+import TableData from '../Common/Table/Table';
+import { ARRAY_KEYS, RECIPE_FORM_KEYS, RECIPE_ADD_VALIDATION } from '../../utils/constants';
+import { isArrayReady } from '../../utils/helperFunctions';
 import RecipeSideModal from './RecipeSideModal/RecipeSideModal';
+import { useGetAllRecipes, GET_ALL_RECIPES } from '../../hooks/useGetAllRecipes';
+import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
+import { useInsertRecipe } from '../../hooks/useInsertRecipe';
 
-const RecipeList = () => {
-  const { recipes } = useContext(LocalStorageContext);
+const Recipe = () => {
+  const queryClient = useQueryClient();
 
+  const { allRecipes: recipes, isAllRecipesFetching } = useGetAllRecipes();
+
+  const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [showSideModal, setShowSideModal] = useState(false);
   const [showAddNewRecipeModal, setShowAddNewRecipeModal] = useState(false);
+
+  const newIngredientTemplate = { [RECIPE_FORM_KEYS.NAME]: '', [RECIPE_FORM_KEYS.QUANTITY]: '' };
+
+  const { insertNewRecipe, isInsertNewRecipeLoading } = useInsertRecipe({
+    onSuccess: () => {
+      toast.success('Your recipe has been saved successfully');
+      onSuccessUnsavedModalClick();
+      queryClient.invalidateQueries([GET_ALL_RECIPES]);
+    },
+    onError: () => {
+      toast.error('Action failed');
+    }
+  });
+
+  const { values, errors, touched, setFieldValue, submitForm, resetForm, dirty } = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      [RECIPE_FORM_KEYS.RECIPE_NAME]: '',
+      [RECIPE_FORM_KEYS.INGREDIENTS]: [newIngredientTemplate],
+      [RECIPE_FORM_KEYS.DESCRIPTION]: ''
+    },
+    validationSchema: RECIPE_ADD_VALIDATION,
+    onSubmit: insertNewRecipe
+  });
 
   const closeSideModal = () => {
     setShowSideModal(false);
@@ -29,7 +60,23 @@ const RecipeList = () => {
   };
 
   const closeAddNewModal = () => {
+    if (dirty) {
+      setShowUnsavedModal(true);
+      return;
+    }
+
     setShowAddNewRecipeModal(false);
+    resetForm();
+  };
+
+  const onSuccessUnsavedModalClick = () => {
+    setShowUnsavedModal(false);
+    setShowAddNewRecipeModal(false);
+    resetForm();
+  };
+
+  const onCancelUnsavedModalClick = () => {
+    setShowUnsavedModal(false);
   };
 
   const openAddNewModal = () => {
@@ -84,6 +131,7 @@ const RecipeList = () => {
 
   const renderTable = () => {
     const headers = [
+      { [ARRAY_KEYS.HEADER]: 'Recipe Id', [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.RECIPE_ID },
       { [ARRAY_KEYS.HEADER]: 'Name', [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.RECIPE_NAME },
       { [ARRAY_KEYS.HEADER]: 'Ingredients', [ARRAY_KEYS.VALUE]: '' },
       { [ARRAY_KEYS.HEADER]: 'Description', [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.DESCRIPTION }
@@ -91,6 +139,7 @@ const RecipeList = () => {
 
     const bodyData = isArrayReady(recipes)?.map((item) => {
       return {
+        [RECIPE_FORM_KEYS.RECIPE_ID]: item[RECIPE_FORM_KEYS.RECIPE_ID],
         [RECIPE_FORM_KEYS.RECIPE_NAME]: item[RECIPE_FORM_KEYS.RECIPE_NAME],
         [ARRAY_KEYS.DISPLAY_FN]: {
           [ARRAY_KEYS.VALUE]: item[RECIPE_FORM_KEYS.INGREDIENTS],
@@ -100,7 +149,13 @@ const RecipeList = () => {
       };
     });
 
-    return <TableData headers={headers} bodyData={bodyData} onRowClick={onRowClick}></TableData>;
+    return (
+      <TableData
+        headers={headers}
+        bodyData={bodyData}
+        onRowClick={onRowClick}
+        isFetching={isAllRecipesFetching}></TableData>
+    );
   };
 
   return (
@@ -112,7 +167,7 @@ const RecipeList = () => {
         rootClassName="h-auto"
         rightHandComponent={renderAddNewRecipeButton()}>
         <div className="flex pb-[250px]">
-          {recipes?.length ? renderTable() : renderFallBackLoader()}
+          {recipes?.length || isAllRecipesFetching ? renderTable() : renderFallBackLoader()}
         </div>
       </BodyContainer>
 
@@ -122,11 +177,28 @@ const RecipeList = () => {
 
       {showAddNewRecipeModal && (
         <Modal showModal closeModal={closeAddNewModal}>
-          <RecipeAdd closeModal={closeAddNewModal} />
+          <RecipeAdd
+            isInsertNewRecipeLoading={isInsertNewRecipeLoading}
+            values={values}
+            errors={errors}
+            touched={touched}
+            setFieldValue={setFieldValue}
+            submitForm={submitForm}
+            dirty={dirty}
+            newIngredientTemplate={newIngredientTemplate}
+          />
         </Modal>
+      )}
+
+      {showUnsavedModal && (
+        <UnsavedChangesModal
+          showModal
+          onSuccess={onSuccessUnsavedModalClick}
+          onCancel={onCancelUnsavedModalClick}
+        />
       )}
     </>
   );
 };
 
-export default RecipeList;
+export default Recipe;

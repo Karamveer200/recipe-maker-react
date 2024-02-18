@@ -18,7 +18,7 @@ const Spinner = ({ center, transparentCenter, className }) => {
         wrapperClass=""
         visible={true}
         ariaLabel="oval-loading"
-        secondaryColor="#2316ff"
+        secondaryColor="#15F5BA"
         strokeWidth={5}
         strokeWidthSecondary={5}
       />

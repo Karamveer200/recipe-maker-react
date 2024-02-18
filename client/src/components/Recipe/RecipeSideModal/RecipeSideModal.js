@@ -1,6 +1,7 @@
-import { RECIPE_FORM_KEYS } from '../../../../utils/constants';
-import Divider from '../../../Common/Divider/Divider';
-import { ARRAY_KEYS } from '../../../../utils/constants';
+import { RECIPE_FORM_KEYS } from '../../../utils/constants';
+import Divider from '../../Common/Divider/Divider';
+import { ARRAY_KEYS } from '../../../utils/constants';
+
 const RecipeSideModal = ({ data }) => {
   if (!data) return <p>Something went wrong</p>;
 

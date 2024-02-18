@@ -21,7 +21,8 @@ const MAPPER_NAMESPACES = {
 
 const QUERIES = {
   insertRecipe: 'insertRecipe',
-  selectAllRecipes: 'selectAllRecipes',
+  insertIngredients: 'insertIngredients',
+  selectAllRecipesWithIngredients: 'selectAllRecipesWithIngredients',
 };
 
 module.exports = {
