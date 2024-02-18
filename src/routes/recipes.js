@@ -1,14 +1,15 @@
 const { check, validationResult } = require('express-validator');
+const { insertNewRecipe } = require('../services/recipes');
 
 const express = require('express');
 const router = express.Router();
 
-//@route POST user/register
-//desc - Post register user email
-
 router.post(
-  '/register',
-  [check('email', 'Valid email is required').isEmail().not().isEmpty()],
+  '/insertRecipe',
+  [
+    check('recipeName', 'recipeName is required').not().isEmpty(),
+    check('description', 'description is required').not().isEmpty(),
+  ],
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -17,10 +18,10 @@ router.post(
     }
 
     try {
-      const { accountId = '', email } = req.body;
+      const { recipeName, description } = req.body;
 
-      const params = { [HCS_KEYS.user_account_id]: accountId, [HCS_KEYS.email]: email };
-      await insertUserEmail(params);
+      const result = await insertNewRecipe({ title: recipeName, description });
+      const recipeId = result.rows[0].recipe_id;
 
       res.send('Success');
     } catch (err) {

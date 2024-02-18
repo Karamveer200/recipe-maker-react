@@ -1,3 +1,5 @@
+import * as Yup from 'yup';
+
 export const LOCAL_STORAGE_KEYS = {
   RECIPES: 'RECIPES'
 };
@@ -21,3 +23,25 @@ export const ARRAY_KEYS = {
   DISPLAY_FN: 'DISPLAY_FN',
   MIN_WIDTH: 'MIN_WIDTH'
 };
+
+export const RECIPE_ADD_VALIDATION = Yup.object().shape({
+  [RECIPE_FORM_KEYS.RECIPE_NAME]: Yup.string().required('Recipe name is required'),
+  [RECIPE_FORM_KEYS.DESCRIPTION]: Yup.string().required('Description is required'),
+  [RECIPE_FORM_KEYS.INGREDIENTS]: Yup.array()
+    .of(Yup.object())
+    .min(1, 'At least one ingredient is required')
+    .test('is-ingredient-name', 'Name and quantity are required', (ingredients) => {
+      const failedIndices = ingredients
+        .map((item, index) =>
+          !item[RECIPE_FORM_KEYS.NAME] || !item[RECIPE_FORM_KEYS.QUANTITY] ? index : null
+        )
+        .filter((index) => index !== null);
+
+      if (failedIndices.length > 0) {
+        const stringifyArr = JSON.stringify(failedIndices);
+        return new Yup.ValidationError(stringifyArr, null, RECIPE_FORM_KEYS.INGREDIENTS);
+      }
+
+      return true;
+    })
+});

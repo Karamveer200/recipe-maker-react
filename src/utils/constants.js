@@ -15,13 +15,13 @@ const NODE_ENVS = {
 };
 
 const MAPPER_NAMESPACES = {
-  buyOrUsePasses: 'buyOrUsePasses',
-  userInformation: 'userInformation',
-  topics: 'topics',
+  recipes: 'recipes',
+  ingredients: 'ingredients',
 };
 
 const QUERIES = {
-  insertBuyPass: 'insertBuyPass',
+  insertRecipe: 'insertRecipe',
+  selectAllRecipes: 'selectAllRecipes',
 };
 
 module.exports = {

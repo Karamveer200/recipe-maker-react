@@ -4,23 +4,11 @@ const cors = require('cors');
 const path = require('path');
 const { initializePgConnection, loadBatisMappers } = require('./src/utils/database/database');
 const configurations = require('./config');
-const { NODE_ENVS } = require('./src/utils/constants');
-const { validateToken } = require('./src/middleware/auth');
 
 loadBatisMappers();
 initializePgConnection();
 
-// Set up CORS middleware to allow requests from a specific URL
-// const corsOptions = {
-//   origin: DEPLOYED_ORIGIN_URL,
-// };
-
-if (configurations.NODE_ENV === NODE_ENVS.development) {
-  app.use(cors());
-} else {
-  // console.log('Activated CORS to whitelist deployed domain - ', corsOptions.origin);
-  // app.use(cors(corsOptions));
-}
+app.use(cors());
 
 app.use(express.json({ extended: false }));
 
@@ -28,7 +16,7 @@ app.get('/api/health', async (req, res) => {
   res.send(`Node app is running on ${configurations.NODE_ENV} environment`);
 });
 
-app.use('/api/user', validateToken, require('./src/routes/user'));
+app.use('/api/recipes', require('./src/routes/recipes'));
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));

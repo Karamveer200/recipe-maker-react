@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recipes">  
+    <insert id="insertRecipe">
+        INSERT INTO recipes_maker.RECIPE
+        (
+            title, 
+            description                                                      
+        )			                                              
+        VALUES
+        (
+            #{title},	                                               
+            #{description}
+        ) 
+        RETURNING recipe_id as recipe_id 
+    </insert>
+
+    <select id="selectAllRecipes">
+        SELECT * 
+        FROM recipes_maker.RECIPE
+        ORDER by updated_at DESC
+    </select>    
+</mapper>

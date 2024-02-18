@@ -3,9 +3,13 @@ import Box from '@mui/material/Box';
 import classes from './Spinner.module.css';
 import { Oval } from 'react-loader-spinner';
 
-const Spinner = ({ center, className }) => {
+const Spinner = ({ center, transparentCenter, className }) => {
   return (
-    <Box sx={{ display: 'flex' }} className={`${center && classes.center} ${className}`}>
+    <Box
+      sx={{ display: 'flex' }}
+      className={`${center && classes.center} ${
+        transparentCenter && classes.transparentCenter
+      } ${className}`}>
       <Oval
         height={65}
         width={65}
@@ -14,8 +18,8 @@ const Spinner = ({ center, className }) => {
         wrapperClass=""
         visible={true}
         ariaLabel="oval-loading"
-        secondaryColor="#4f46e5"
-        strokeWidth={2}
+        secondaryColor="#2316ff"
+        strokeWidth={5}
         strokeWidthSecondary={5}
       />
     </Box>
