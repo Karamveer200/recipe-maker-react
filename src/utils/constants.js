@@ -1,23 +1,32 @@
-export const LOCAL_STORAGE_KEYS = {
-  RECIPES: 'RECIPES'
-};
+const configurations = require('../../config');
 
-export const RECIPE_FORM_KEYS = {
-  RECIPE_NAME: 'recipeName',
-  INGREDIENTS: 'ingredients',
-  DESCRIPTION: 'description',
-  NAME: 'name',
-  QUANTITY: 'quantity'
-};
-
-export const ARRAY_KEYS = {
+const ARRAY_KEYS = {
   LABEL: 'LABEL',
   VALUE: 'VALUE',
   COMPONENT: 'COMPONENT',
   DATA: 'DATA',
-  ON_CLICK: 'ON_CLICK',
-  HEADER: 'HEADER',
-  BODY: 'BODY',
-  DISPLAY_FN: 'DISPLAY_FN',
-  MIN_WIDTH: 'MIN_WIDTH'
+  VALIDATION: 'VALIDATION',
+};
+
+const NODE_ENVS = {
+  development: 'development',
+  production: 'production',
+  testing: 'testing',
+};
+
+const MAPPER_NAMESPACES = {
+  buyOrUsePasses: 'buyOrUsePasses',
+  userInformation: 'userInformation',
+  topics: 'topics',
+};
+
+const QUERIES = {
+  insertBuyPass: 'insertBuyPass',
+};
+
+module.exports = {
+  ARRAY_KEYS,
+  NODE_ENVS,
+  MAPPER_NAMESPACES,
+  QUERIES,
 };

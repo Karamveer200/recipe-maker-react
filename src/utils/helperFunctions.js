@@ -1,39 +1,27 @@
-import { toast } from 'react-toastify';
-import * as momentTimezone from 'moment-timezone';
+require('dotenv').config();
 
-export const scrollToTop = (smooth = false) => {
-  if (smooth) {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
+const { NODE_ENVS, UNAUTHORIZED } = require('./constants');
+const configurations = require('../../config');
+
+const getDynamicEnv = async (key) => {
+  if (configurations.NODE_ENV === NODE_ENVS.development) {
+    return key;
   } else {
-    window.scrollTo(0, 0);
   }
 };
 
-export const displayErrors = (errors = []) => {
-  errors.forEach((item) => toast.error(item.msg));
+const isEmptyArray = (input = []) => {
+  return Array.isArray(input) && input?.length > 0 ? false : true;
 };
 
-export const isArray = (arr) => {
-  return Array.isArray(arr) && arr?.length > 0 ? true : false;
+const handleServerError = (err, res) => {
+  if (err.message === UNAUTHORIZED) {
+    res.status(401).json({ msg: 'Unauthorized' });
+  } else res.status(500).send('Server Error');
 };
 
-export const getUserLocalTimezone = () => {
-  return momentTimezone().tz(momentTimezone.tz.guess()).format('z');
-};
-
-export const parseLocalStorageToArray = (key) => {
-  try {
-    const getExistingRecipes = localStorage.getItem(key);
-    return JSON.parse(getExistingRecipes) || [];
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const isArrayReady = (arr) => {
-  return isArray(arr) ? arr : [];
+module.exports = {
+  isEmptyArray,
+  getDynamicEnv,
+  handleServerError,
 };
