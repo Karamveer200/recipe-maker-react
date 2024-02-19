@@ -37,11 +37,11 @@ export const RECIPE_ADD_VALIDATION = Yup.object().shape({
 });
 
 export const LOCAL_INGREDIENT_NAMES = [
-  { value: 'tomato', label: 'Tomato' },
-  { value: 'chicken', label: 'Chicken' },
-  { value: 'garlic', label: 'Garlic' },
-  { value: 'onion', label: 'Onion' },
-  { value: 'cheese', label: 'Cheese' }
+  { value: 'Tomato', label: 'Tomato' },
+  { value: 'Chicken', label: 'Chicken' },
+  { value: 'Garlic', label: 'Garlic' },
+  { value: 'Onion', label: 'Onion' },
+  { value: 'Cheese', label: 'Cheese' }
 ];
 
 export const LOCAL_INGREDIENT_QUANTITIES = [
