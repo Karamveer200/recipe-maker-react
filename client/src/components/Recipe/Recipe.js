@@ -9,9 +9,13 @@ import emptyLottie from '../../assets/emptyLottie.json';
 import Modal from '../Common/Modal/Modal';
 import UnsavedChangesModal from '../Common/Modal/UnsavedChangesModal';
 import RecipeAdd from './RecipeAdd/RecipeAdd';
-import TableData from '../Common/Table/Table';
+import TableData, { StyledText } from '../Common/Table/Table';
 import { ARRAY_KEYS, RECIPE_FORM_KEYS, RECIPE_ADD_VALIDATION } from '../../utils/constants';
-import { isArrayReady } from '../../utils/helperFunctions';
+import {
+  isArrayReady,
+  getUserLocalTimezone,
+  convertTimeToMomentFormat
+} from '../../utils/helperFunctions';
 import RecipeSideModal from './RecipeSideModal/RecipeSideModal';
 import { useGetAllRecipes, GET_ALL_RECIPES } from '../../hooks/useGetAllRecipes';
 import { useFormik } from 'formik';
@@ -120,32 +124,96 @@ const Recipe = () => {
   );
 
   const ShowIngredients = ({ item }) => {
-    let joinIngredients = item
-      ?.slice(0, 4)
-      ?.map((item) => item[RECIPE_FORM_KEYS.NAME])
-      ?.join(', ');
-    if (item?.length > 4) joinIngredients = `${joinIngredients}...`;
+    if (!item) return <div>---</div>;
 
-    return <div>{joinIngredients}</div>;
+    if (item?.length < 2) {
+      return (
+        <StyledText fontSize={14} textAlign="left">
+          🔵 {item[0][RECIPE_FORM_KEYS.NAME]}
+        </StyledText>
+      );
+    }
+
+    return (
+      <>
+        <StyledText fontSize={14} textAlign="left">
+          🔵 {item[0][RECIPE_FORM_KEYS.NAME]}
+        </StyledText>
+        <StyledText fontSize={14} mt={1} textAlign="left">
+          + {item.length - 1} More...
+        </StyledText>
+      </>
+    );
+  };
+
+  const ShowTime = ({ time }) => {
+    const { date, time: formattedTime } = convertTimeToMomentFormat(time);
+
+    return (
+      <>
+        <StyledText fontSize={14} textAlign="left">
+          {date}
+        </StyledText>
+        <StyledText fontSize={14} textAlign="left" mt={1}>
+          {formattedTime}
+        </StyledText>
+      </>
+    );
   };
 
   const renderTable = () => {
     const headers = [
-      { [ARRAY_KEYS.HEADER]: 'Recipe Id', [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.RECIPE_ID },
-      { [ARRAY_KEYS.HEADER]: 'Name', [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.RECIPE_NAME },
-      { [ARRAY_KEYS.HEADER]: 'Ingredients', [ARRAY_KEYS.VALUE]: '' },
-      { [ARRAY_KEYS.HEADER]: 'Description', [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.DESCRIPTION }
+      {
+        [ARRAY_KEYS.HEADER]: 'Recipe Id',
+        [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.RECIPE_ID,
+        [ARRAY_KEYS.MAX_WIDTH]: '60px'
+      },
+      {
+        [ARRAY_KEYS.HEADER]: 'Name',
+        [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.RECIPE_NAME,
+        [ARRAY_KEYS.MAX_WIDTH]: '80px'
+      },
+      {
+        [ARRAY_KEYS.HEADER]: 'Ingredients',
+        [ARRAY_KEYS.VALUE]: '',
+        [ARRAY_KEYS.MAX_WIDTH]: '80px'
+      },
+      {
+        [ARRAY_KEYS.HEADER]: 'Description',
+        [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.DESCRIPTION,
+        [ARRAY_KEYS.MAX_WIDTH]: '200px'
+      },
+      {
+        [ARRAY_KEYS.HEADER]: `Last Updated (${getUserLocalTimezone()})`,
+        [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.UPDATED_AT,
+        [ARRAY_KEYS.MAX_WIDTH]: '120px'
+      },
+      {
+        [ARRAY_KEYS.HEADER]: `Created At (${getUserLocalTimezone()})`,
+        [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.CREATED_AT,
+        [ARRAY_KEYS.MAX_WIDTH]: '120px'
+      }
     ];
 
     const bodyData = isArrayReady(recipes)?.map((item) => {
       return {
         [RECIPE_FORM_KEYS.RECIPE_ID]: item[RECIPE_FORM_KEYS.RECIPE_ID],
-        [RECIPE_FORM_KEYS.RECIPE_NAME]: item[RECIPE_FORM_KEYS.RECIPE_NAME],
+        [RECIPE_FORM_KEYS.RECIPE_NAME]: (
+          <StyledText fontSize={14}>{item[RECIPE_FORM_KEYS.RECIPE_NAME]}</StyledText>
+        ),
         [ARRAY_KEYS.DISPLAY_FN]: {
           [ARRAY_KEYS.VALUE]: item[RECIPE_FORM_KEYS.INGREDIENTS],
           component: <ShowIngredients item={item[RECIPE_FORM_KEYS.INGREDIENTS]} />
         },
-        [RECIPE_FORM_KEYS.DESCRIPTION]: item[RECIPE_FORM_KEYS.DESCRIPTION]
+        [RECIPE_FORM_KEYS.DESCRIPTION]: (
+          <StyledText fontSize={14}>{item[RECIPE_FORM_KEYS.DESCRIPTION]}</StyledText>
+        ),
+        [ARRAY_KEYS.DISPLAY_FN]: {
+          [ARRAY_KEYS.VALUE]: item[RECIPE_FORM_KEYS.INGREDIENTS],
+          component: <ShowIngredients item={item[RECIPE_FORM_KEYS.INGREDIENTS]} />
+        },
+        [RECIPE_FORM_KEYS.UPDATED_AT]: <ShowTime time={item[RECIPE_FORM_KEYS.UPDATED_AT]} />,
+        [RECIPE_FORM_KEYS.CREATED_AT]: <ShowTime time={item[RECIPE_FORM_KEYS.CREATED_AT]} />
       };
     });
 
@@ -159,14 +227,13 @@ const Recipe = () => {
   };
 
   return (
-    <>
+    <div className="h-full pt-[80px]">
       <BodyContainer
         heading="List of Recipes"
         whiteHeading
-        className="h-screen"
-        rootClassName="h-auto"
+        rootClassName={'h-full'}
         rightHandComponent={renderAddNewRecipeButton()}>
-        <div className="flex pb-[250px]">
+        <div className="flex pb-[110px] pt-[20px]">
           {recipes?.length || isAllRecipesFetching ? renderTable() : renderFallBackLoader()}
         </div>
       </BodyContainer>
@@ -197,7 +264,7 @@ const Recipe = () => {
           onCancel={onCancelUnsavedModalClick}
         />
       )}
-    </>
+    </div>
   );
 };
 

@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify';
 import * as momentTimezone from 'moment-timezone';
+import moment from 'moment';
 
 export const scrollToTop = (smooth = false) => {
   if (smooth) {
@@ -23,6 +24,14 @@ export const isArray = (arr) => {
 
 export const getUserLocalTimezone = () => {
   return momentTimezone().tz(momentTimezone.tz.guess()).format('z');
+};
+
+export const convertTimeToMomentFormat = (timeStamp) => {
+  const mom = moment(timeStamp)?.locale('en');
+  const date = mom?.format('MMMM DD, YYYY');
+  const time = mom?.format('hh:mm A');
+
+  return { date, time };
 };
 
 export const parseLocalStorageToArray = (key) => {

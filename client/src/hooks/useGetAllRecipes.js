@@ -4,10 +4,10 @@ import { getAllRecipes } from '../services/recipe';
 
 export const GET_ALL_RECIPES = 'GET_ALL_RECIPES';
 
-export const useGetAllRecipes = (filterParams = '', rest = {}) => {
+export const useGetAllRecipes = (rest = {}) => {
   const { data: allRecipes, isFetching: isAllRecipesFetching } = useQuery(
     [GET_ALL_RECIPES],
-    () => getAllRecipes(filterParams),
+    () => getAllRecipes(),
     rest
   );
 

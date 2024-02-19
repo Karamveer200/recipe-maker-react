@@ -35,11 +35,11 @@ function App() {
   );
 
   return (
-    <div className={`h-screen`}>
+    <div>
       <ToastWrapper />
       <Header />
 
-      <div className={`marginTopRoot w-full h-full`}>
+      <div className={`w-full`} style={{ height: '100vh' }}>
         <Suspense fallback={<FallbackLoader />}>
           <Routes>
             {ALL_ROUTES.map((item, index) => (

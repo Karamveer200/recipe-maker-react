@@ -10,7 +10,9 @@ export const RECIPE_FORM_KEYS = {
   INGREDIENTS: 'ingredients',
   DESCRIPTION: 'description',
   NAME: 'name',
-  QUANTITY: 'quantity'
+  QUANTITY: 'quantity',
+  CREATED_AT: 'created_at',
+  UPDATED_AT: 'updated_at'
 };
 
 export const ARRAY_KEYS = {
@@ -22,7 +24,8 @@ export const ARRAY_KEYS = {
   HEADER: 'HEADER',
   BODY: 'BODY',
   DISPLAY_FN: 'DISPLAY_FN',
-  MIN_WIDTH: 'MIN_WIDTH'
+  MIN_WIDTH: 'MIN_WIDTH',
+  MAX_WIDTH: 'MAX_WIDTH'
 };
 
 export const RECIPE_ADD_VALIDATION = Yup.object().shape({

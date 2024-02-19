@@ -12,6 +12,13 @@ import classes from './Table.module.css';
 import { ARRAY_KEYS } from '../../../utils/constants';
 import Spinner from '../Spinner/Spinner';
 import { isArray, isArrayReady } from '../../../utils/helperFunctions';
+import Typography from '@mui/material/Typography';
+
+export const StyledText = styled(Typography)({
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis'
+});
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -69,14 +76,14 @@ const TableData = ({ headers = [], bodyData = [], isFetching = false, onRowClick
           <TableHead>
             <TableRow>
               {isArrayReady(headers)?.map((item, index) => {
-                const minWidth = item[ARRAY_KEYS.MIN_WIDTH];
+                const maxWidth = item[ARRAY_KEYS.MAX_WIDTH];
 
                 return (
                   <StyledTableCell
                     align="center"
                     key={index}
-                    style={minWidth ? { minWidth: minWidth } : {}}
-                    className={`${classes.borders} ${classes.fontSize16}`}>
+                    style={maxWidth ? { maxWidth: maxWidth } : {}}
+                    className={`${classes.borders} ${classes.fontSize14}`}>
                     {item[ARRAY_KEYS.HEADER]}
                   </StyledTableCell>
                 );
@@ -91,6 +98,8 @@ const TableData = ({ headers = [], bodyData = [], isFetching = false, onRowClick
                 return (
                   <StyledTableRow key={index} onClick={() => onRowClick?.(row)}>
                     {isArrayReady(rowsArray)?.map((item, rowIndex) => {
+                      const maxWidth = headers?.[rowIndex]?.[ARRAY_KEYS.MAX_WIDTH];
+
                       if (item === ARRAY_KEYS.DISPLAY_FN) {
                         const displayFn = row[ARRAY_KEYS.DISPLAY_FN]?.component;
 
@@ -98,18 +107,21 @@ const TableData = ({ headers = [], bodyData = [], isFetching = false, onRowClick
                           <StyledTableCell
                             align="center"
                             key={rowIndex}
-                            className={` ${classes.borders} ${classes.fontSize14}`}>
+                            className={` ${classes.borders} ${classes.fontSize14}`}
+                            style={maxWidth ? { maxWidth: maxWidth } : {}}>
                             {displayFn}
                           </StyledTableCell>
                         );
                       }
 
                       const dataText = row[headers?.[rowIndex]?.[ARRAY_KEYS.VALUE]];
+
                       return (
                         <StyledTableCell
                           align="center"
                           key={rowIndex}
-                          className={` ${classes.borders} ${classes.fontSize14}`}>
+                          className={` ${classes.borders} ${classes.fontSize14}`}
+                          style={maxWidth ? { maxWidth: maxWidth } : {}}>
                           {dataText}
                         </StyledTableCell>
                       );

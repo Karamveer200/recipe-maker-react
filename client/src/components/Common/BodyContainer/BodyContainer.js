@@ -1,4 +1,4 @@
-import React from 'react';
+import { Scrollbar } from 'react-scrollbars-custom';
 
 const BodyContainer = ({
   children,
@@ -61,23 +61,25 @@ const BodyContainer = ({
           </linearGradient>
         </defs>
       </svg>
-      <div
-        className={`mx-auto max-w-[1500px] px-8
+      <Scrollbar>
+        <div
+          className={`mx-auto max-w-[1500px] px-8
          sm:px-14 md:px-16 pt-12 lg:px-12 h-full ${className}`}>
-        <div className="flex justify-between">
-          <div
-            className={`${
-              whiteHeading ? 'text-white' : 'pinkWhiteText'
-            } MontserratFamily font-semibold text-lg sm:text-xl md:text-2xl lg:text-3xl pb-6 sm:pb-8 pt-2 sm:pt-6 ${
-              reducePaddingOnSm && 'pb-2'
-            } ${headingClass}`}>
-            {heading}
+          <div className="flex justify-between">
+            <div
+              className={`${
+                whiteHeading ? 'text-white' : 'pinkWhiteText'
+              } MontserratFamily font-semibold text-lg sm:text-xl md:text-2xl pb-6 sm:pb-8 pt-2 sm:pt-6 ${
+                reducePaddingOnSm && 'pb-2'
+              } ${headingClass}`}>
+              {heading}
+            </div>
+            {rightHandComponent}
           </div>
-          {rightHandComponent}
-        </div>
 
-        {children}
-      </div>
+          {children}
+        </div>
+      </Scrollbar>
     </div>
   );
 };
