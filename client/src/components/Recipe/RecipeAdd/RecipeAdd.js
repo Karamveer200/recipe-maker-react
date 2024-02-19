@@ -1,11 +1,18 @@
 import TextInput from '../../Common/Inputs/TextInput';
+import CustomAutoComplete from '../../Common/Inputs/AutoComplete';
+import { useState, useEffect } from 'react';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import { IconButton } from '@mui/material';
-import { RECIPE_FORM_KEYS } from '../../../utils/constants';
+import {
+  RECIPE_FORM_KEYS,
+  LOCAL_INGREDIENT_QUANTITIES,
+  LOCAL_INGREDIENT_NAMES
+} from '../../../utils/constants';
 import { Scrollbar } from 'react-scrollbars-custom';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import { Button } from '@mui/material';
 import Spinner from '../../Common/Spinner/Spinner';
+import CustomTooltip from '../../Common/Tooltip/ToolTip';
 
 const RecipeAdd = ({
   values,
@@ -13,40 +20,76 @@ const RecipeAdd = ({
   touched,
   setFieldValue,
   submitForm,
-  newIngredientTemplate,
-  isInsertNewRecipeLoading
+  isInsertNewRecipeLoading,
+  allIngredients
 }) => {
+  const [localIngredientName, setLocalIngredientName] = useState('');
+  const [localIngredientQuantity, setLocalIngredientQuantity] = useState('');
+  const [localIngredientError, setLocalIngredientError] = useState({
+    showError: false,
+    nameActive: false,
+    quantityActive: false,
+    text: null
+  });
+
+  useEffect(() => {
+    const nameLen = localIngredientName?.length;
+    const quantityLen = localIngredientQuantity?.length;
+
+    if (!nameLen && !quantityLen) {
+      setLocalIngredientError((prev) => ({
+        ...prev,
+        text: 'Both Name and Quantity are required',
+        nameActive: true,
+        quantityActive: true
+      }));
+    } else if (!nameLen) {
+      setLocalIngredientError((prev) => ({
+        ...prev,
+        text: 'Name is required',
+        nameActive: true,
+        quantityActive: false
+      }));
+    } else if (!quantityLen) {
+      setLocalIngredientError((prev) => ({
+        ...prev,
+        text: 'Quantity is required',
+        nameActive: false,
+        quantityActive: true
+      }));
+    } else if (quantityLen && nameLen) {
+      setLocalIngredientError({
+        showError: false,
+        nameActive: false,
+        quantityActive: false,
+        text: null
+      });
+    }
+  }, [localIngredientName, localIngredientQuantity]);
+
   const onFormChange = (e) => setFieldValue(e.target.name, e.target.value);
 
-  const getIngredientsErrorsArr = (ingredientErrorStr) => {
-    if (!ingredientErrorStr) return [];
+  const onAddNewIngredient = () => {
+    if (localIngredientError?.nameActive || localIngredientError?.quantityActive) {
+      setLocalIngredientError((prev) => ({
+        ...prev,
+        showError: true
+      }));
 
-    try {
-      return JSON.parse(ingredientErrorStr);
-    } catch (error) {
-      console.log(error);
+      return;
     }
-  };
 
-  const onIngredientChange = (e, index, key) => {
-    const modifyCurrentIngredient = values?.[RECIPE_FORM_KEYS.INGREDIENTS]?.map(
-      (item, itemIndex) => {
-        if (index === itemIndex) {
-          return { ...item, [key]: e.target.value };
-        }
-
-        return item;
-      }
-    );
-
-    setFieldValue(e.target.name, modifyCurrentIngredient);
-  };
-
-  const onAddNewIngredient = () =>
     setFieldValue(RECIPE_FORM_KEYS.INGREDIENTS, [
-      ...values[RECIPE_FORM_KEYS.INGREDIENTS],
-      newIngredientTemplate
+      {
+        [RECIPE_FORM_KEYS.NAME]: localIngredientName,
+        [RECIPE_FORM_KEYS.QUANTITY]: localIngredientQuantity
+      },
+      ...values[RECIPE_FORM_KEYS.INGREDIENTS]
     ]);
+
+    setLocalIngredientName('');
+    setLocalIngredientQuantity('');
+  };
 
   const onRemoveIngredient = (index) =>
     setFieldValue(RECIPE_FORM_KEYS.INGREDIENTS, [
@@ -54,37 +97,49 @@ const RecipeAdd = ({
     ]);
 
   const renderAddNewIngredientBtn = () => (
-    <IconButton
-      variant="contained"
-      sx={{ marginTop: '8px', backgroundColor: '#fff', width: '0px', height: '0px' }}
-      onClick={onAddNewIngredient}>
-      <AddCircleRoundedIcon
-        sx={{
-          width: '35px',
-          height: '35px',
-          '&>path': {
-            fill: '#4f46e5'
-          }
-        }}
-      />
-    </IconButton>
+    <CustomTooltip
+      title="Add"
+      arrow
+      placement="top"
+      sx={{
+        padding: '5px',
+        fontSize: '15px',
+        fontWeight: 500
+      }}>
+      <IconButton
+        variant="contained"
+        sx={{ marginTop: '8px', backgroundColor: '#fff', width: '0px', height: '0px' }}
+        onClick={onAddNewIngredient}>
+        <AddCircleRoundedIcon
+          sx={{
+            width: '35px',
+            height: '35px',
+            '&>path': {
+              fill: '#4f46e5'
+            }
+          }}
+        />
+      </IconButton>
+    </CustomTooltip>
   );
 
   const renderDeleteIngredientBtn = (index) => (
-    <IconButton
-      variant="contained"
-      sx={{ marginTop: '8px', backgroundColor: '#fff', width: '0px', height: '0px' }}
-      onClick={() => onRemoveIngredient(index)}>
-      <RemoveCircleRoundedIcon
-        sx={{
-          width: '35px',
-          height: '35px',
-          '&>path': {
-            fill: '#ef0000'
-          }
-        }}
-      />
-    </IconButton>
+    <CustomTooltip title="Remove" arrow placement="top">
+      <IconButton
+        variant="contained"
+        sx={{ marginTop: '8px', backgroundColor: '#fff', width: '0px', height: '0px' }}
+        onClick={() => onRemoveIngredient(index)}>
+        <RemoveCircleRoundedIcon
+          sx={{
+            width: '35px',
+            height: '35px',
+            '&>path': {
+              fill: '#ef0000'
+            }
+          }}
+        />
+      </IconButton>
+    </CustomTooltip>
   );
 
   const renderErrorMsg = (msg) => (
@@ -131,15 +186,55 @@ const RecipeAdd = ({
                     style={{
                       gridTemplateColumns: '3fr 2fr'
                     }}>
-                    <div className="text-base font-medium">Name</div>
+                    <div className="text-base font-medium ">Name</div>
                     <div className="text-base font-medium">Quantity</div>
                   </div>
                   <div className="flex flex-col gap-[10px]">
-                    {values?.[RECIPE_FORM_KEYS.INGREDIENTS]?.map((item, index) => {
-                      const invalidIndices = getIngredientsErrorsArr(
-                        errors?.[RECIPE_FORM_KEYS.INGREDIENTS]
-                      );
+                    <div
+                      className="grid gap-[10px]"
+                      style={{
+                        gridTemplateColumns: '3fr 2fr'
+                      }}>
+                      <CustomAutoComplete
+                        options={allIngredients?.nameOptions || []}
+                        setter={setLocalIngredientName}
+                        value={localIngredientName}
+                        placeholder="Ex - Tomato"
+                        invalid={
+                          (errors[RECIPE_FORM_KEYS.INGREDIENTS] &&
+                            touched[RECIPE_FORM_KEYS.INGREDIENTS]) ||
+                          (localIngredientError?.nameActive && localIngredientError?.showError)
+                        }
+                      />
 
+                      <div className="flex gap-[15px] items-center">
+                        <CustomAutoComplete
+                          options={allIngredients?.quantityOptions || []}
+                          setter={setLocalIngredientQuantity}
+                          value={localIngredientQuantity}
+                          placeholder="Ex - 100 g"
+                          className="w-full"
+                          invalid={
+                            (errors[RECIPE_FORM_KEYS.INGREDIENTS] &&
+                              touched[RECIPE_FORM_KEYS.INGREDIENTS]) ||
+                            (localIngredientError?.quantityActive &&
+                              localIngredientError?.showError)
+                          }
+                        />
+
+                        {renderAddNewIngredientBtn()}
+                      </div>
+                    </div>
+
+                    {(localIngredientError?.nameActive || localIngredientError?.quantityActive) &&
+                      localIngredientError?.showError &&
+                      renderErrorMsg(localIngredientError?.text)}
+
+                    {errors[RECIPE_FORM_KEYS.INGREDIENTS] &&
+                      touched[RECIPE_FORM_KEYS.INGREDIENTS] &&
+                      renderErrorMsg(errors[RECIPE_FORM_KEYS.INGREDIENTS])}
+
+                    {values?.[RECIPE_FORM_KEYS.INGREDIENTS]?.map((item, index) => {
                       return (
                         <div
                           className="grid gap-[10px]"
@@ -148,37 +243,23 @@ const RecipeAdd = ({
                           }}
                           key={index}>
                           <TextInput
-                            onChange={(e) => onIngredientChange(e, index, 'name')}
-                            value={item.name}
-                            name={RECIPE_FORM_KEYS.INGREDIENTS}
-                            placeholder="Ex - Lettuce"
-                            isInvalid={
-                              invalidIndices.includes(index) &&
-                              touched[RECIPE_FORM_KEYS.INGREDIENTS]
-                            }
+                            value={item[RECIPE_FORM_KEYS.NAME]}
+                            onChange={() => {}}
+                            name={RECIPE_FORM_KEYS.NAME}
+                            inputClassName="pointer-events-none bg-gray-700 text-white"
                           />
                           <div className="flex gap-[15px] items-center">
                             <TextInput
-                              onChange={(e) => onIngredientChange(e, index, 'quantity')}
-                              value={item.quantity}
-                              name={RECIPE_FORM_KEYS.INGREDIENTS}
-                              placeholder="Ex - 100 g"
-                              isInvalid={
-                                invalidIndices.includes(index) &&
-                                touched[RECIPE_FORM_KEYS.INGREDIENTS]
-                              }
+                              value={item[RECIPE_FORM_KEYS.QUANTITY]}
+                              onChange={() => {}}
+                              name={RECIPE_FORM_KEYS.QUANTITY}
+                              inputClassName="pointer-events-none bg-gray-700 text-white"
                             />
-                            {index === values?.[RECIPE_FORM_KEYS.INGREDIENTS]?.length - 1
-                              ? renderAddNewIngredientBtn()
-                              : renderDeleteIngredientBtn(index)}
+                            {renderDeleteIngredientBtn(index)}
                           </div>
                         </div>
                       );
                     })}
-
-                    {!!getIngredientsErrorsArr(errors?.[RECIPE_FORM_KEYS.INGREDIENTS])?.length &&
-                      touched[RECIPE_FORM_KEYS.INGREDIENTS] &&
-                      renderErrorMsg('Ingredient name and quantity is required')}
                   </div>
                 </div>
               </div>

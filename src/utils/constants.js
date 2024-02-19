@@ -23,6 +23,7 @@ const QUERIES = {
   insertRecipe: 'insertRecipe',
   insertIngredients: 'insertIngredients',
   selectAllRecipesWithIngredients: 'selectAllRecipesWithIngredients',
+  selectAllIngredients: 'selectAllIngredients',
 };
 
 module.exports = {

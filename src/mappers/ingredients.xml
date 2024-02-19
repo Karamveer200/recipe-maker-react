@@ -18,9 +18,9 @@
         </foreach>
     </insert>
 
-    <select id="selectAllRecipes">
+    <select id="selectAllIngredients">
         SELECT * 
-        FROM recipes_maker.RECIPE
-        ORDER by updated_at DESC
+        FROM recipes_maker.INGREDIENTS
+        ORDER by name ASC
     </select>    
 </mapper>

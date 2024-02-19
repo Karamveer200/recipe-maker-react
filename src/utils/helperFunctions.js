@@ -50,9 +50,16 @@ const formatGetAllRecipesArr = (rows) =>
     return acc;
   }, []);
 
+const formatGetAllIngredientsNamesArr = (rows) => rows.map((item) => ({ label: item.name, value: item.name }));
+
+const formatGetAllIngredientsQuantitiesArr = (rows) =>
+  rows.map((item) => ({ label: item.quantity, value: item.quantity }));
+
 module.exports = {
   isEmptyArray,
   getDynamicEnv,
   handleServerError,
   formatGetAllRecipesArr,
+  formatGetAllIngredientsNamesArr,
+  formatGetAllIngredientsQuantitiesArr,
 };

@@ -7,11 +7,15 @@ const insertNewRecipe = async (params) =>
 const insertNewIngredient = async (params) =>
   await executeQuery(MAPPER_NAMESPACES.ingredients, QUERIES.insertIngredients, params);
 
-const getAllRecipes = async (params) =>
+const getAllRecipes = async () =>
   await executeQuery(MAPPER_NAMESPACES.recipes, QUERIES.selectAllRecipesWithIngredients);
+
+const getAllIngredients = async () =>
+  await executeQuery(MAPPER_NAMESPACES.ingredients, QUERIES.selectAllIngredients);
 
 module.exports = {
   insertNewRecipe,
   insertNewIngredient,
   getAllRecipes,
+  getAllIngredients,
 };

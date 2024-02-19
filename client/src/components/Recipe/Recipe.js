@@ -10,7 +10,13 @@ import Modal from '../Common/Modal/Modal';
 import UnsavedChangesModal from '../Common/Modal/UnsavedChangesModal';
 import RecipeAdd from './RecipeAdd/RecipeAdd';
 import TableData, { StyledText } from '../Common/Table/Table';
-import { ARRAY_KEYS, RECIPE_FORM_KEYS, RECIPE_ADD_VALIDATION } from '../../utils/constants';
+import {
+  ARRAY_KEYS,
+  RECIPE_FORM_KEYS,
+  RECIPE_ADD_VALIDATION,
+  LOCAL_INGREDIENT_QUANTITIES,
+  LOCAL_INGREDIENT_NAMES
+} from '../../utils/constants';
 import {
   isArrayReady,
   getUserLocalTimezone,
@@ -18,6 +24,8 @@ import {
 } from '../../utils/helperFunctions';
 import RecipeSideModal from './RecipeSideModal/RecipeSideModal';
 import { useGetAllRecipes, GET_ALL_RECIPES } from '../../hooks/useGetAllRecipes';
+import { useGetAllIngredients, GET_ALL_INGREDIENTS } from '../../hooks/useGetAllIngredients';
+
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { useInsertRecipe } from '../../hooks/useInsertRecipe';
@@ -27,17 +35,27 @@ const Recipe = () => {
 
   const { allRecipes: recipes, isAllRecipesFetching } = useGetAllRecipes();
 
+  const { allIngredients, isAllIngredientsFetching } = useGetAllIngredients({
+    select: (res) => ({
+      nameOptions: [...res.nameOptions, ...LOCAL_INGREDIENT_NAMES].sort((a, b) =>
+        a.label.localeCompare(b.label)
+      ),
+      quantityOptions: [...res.quantityOptions, ...LOCAL_INGREDIENT_QUANTITIES].sort((a, b) =>
+        a.label.localeCompare(b.label)
+      )
+    })
+  });
+
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [showSideModal, setShowSideModal] = useState(false);
   const [showAddNewRecipeModal, setShowAddNewRecipeModal] = useState(false);
-
-  const newIngredientTemplate = { [RECIPE_FORM_KEYS.NAME]: '', [RECIPE_FORM_KEYS.QUANTITY]: '' };
 
   const { insertNewRecipe, isInsertNewRecipeLoading } = useInsertRecipe({
     onSuccess: () => {
       toast.success('Your recipe has been saved successfully');
       onSuccessUnsavedModalClick();
       queryClient.invalidateQueries([GET_ALL_RECIPES]);
+      queryClient.invalidateQueries([GET_ALL_INGREDIENTS]);
     },
     onError: () => {
       toast.error('Action failed');
@@ -48,7 +66,7 @@ const Recipe = () => {
     enableReinitialize: true,
     initialValues: {
       [RECIPE_FORM_KEYS.RECIPE_NAME]: '',
-      [RECIPE_FORM_KEYS.INGREDIENTS]: [newIngredientTemplate],
+      [RECIPE_FORM_KEYS.INGREDIENTS]: [],
       [RECIPE_FORM_KEYS.DESCRIPTION]: ''
     },
     validationSchema: RECIPE_ADD_VALIDATION,
@@ -161,6 +179,8 @@ const Recipe = () => {
     );
   };
 
+  const isLoading = isAllIngredientsFetching || isAllRecipesFetching;
+
   const renderTable = () => {
     const headers = [
       {
@@ -222,7 +242,7 @@ const Recipe = () => {
         headers={headers}
         bodyData={bodyData}
         onRowClick={onRowClick}
-        isFetching={isAllRecipesFetching}></TableData>
+        isFetching={isLoading}></TableData>
     );
   };
 
@@ -234,7 +254,7 @@ const Recipe = () => {
         rootClassName={'h-full'}
         rightHandComponent={renderAddNewRecipeButton()}>
         <div className="flex pb-[110px] pt-[20px]">
-          {recipes?.length || isAllRecipesFetching ? renderTable() : renderFallBackLoader()}
+          {recipes?.length || isLoading ? renderTable() : renderFallBackLoader()}
         </div>
       </BodyContainer>
 
@@ -252,7 +272,7 @@ const Recipe = () => {
             setFieldValue={setFieldValue}
             submitForm={submitForm}
             dirty={dirty}
-            newIngredientTemplate={newIngredientTemplate}
+            allIngredients={allIngredients}
           />
         </Modal>
       )}

@@ -1,6 +1,10 @@
 const { check, validationResult } = require('express-validator');
-const { insertNewRecipe, insertNewIngredient, getAllRecipes } = require('../services/recipes');
-const { formatGetAllRecipesArr } = require('../utils/helperFunctions');
+const { insertNewRecipe, insertNewIngredient, getAllRecipes, getAllIngredients } = require('../services/recipes');
+const {
+  formatGetAllRecipesArr,
+  formatGetAllIngredientsNamesArr,
+  formatGetAllIngredientsQuantitiesArr,
+} = require('../utils/helperFunctions');
 const express = require('express');
 const router = express.Router();
 
@@ -44,4 +48,20 @@ router.get('/all', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+router.get('/allIngredients', async (req, res) => {
+  try {
+    const result = await getAllIngredients();
+    const rows = result?.rows;
+
+    res.send({
+      nameOptions: formatGetAllIngredientsNamesArr(rows),
+      quantityOptions: formatGetAllIngredientsQuantitiesArr(rows),
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;

@@ -34,18 +34,20 @@ export const RECIPE_ADD_VALIDATION = Yup.object().shape({
   [RECIPE_FORM_KEYS.INGREDIENTS]: Yup.array()
     .of(Yup.object())
     .min(1, 'At least one ingredient is required')
-    .test('is-ingredient-name', 'Name and quantity are required', (ingredients) => {
-      const failedIndices = ingredients
-        .map((item, index) =>
-          !item[RECIPE_FORM_KEYS.NAME] || !item[RECIPE_FORM_KEYS.QUANTITY] ? index : null
-        )
-        .filter((index) => index !== null);
-
-      if (failedIndices.length > 0) {
-        const stringifyArr = JSON.stringify(failedIndices);
-        return new Yup.ValidationError(stringifyArr, null, RECIPE_FORM_KEYS.INGREDIENTS);
-      }
-
-      return true;
-    })
 });
+
+export const LOCAL_INGREDIENT_NAMES = [
+  { value: 'tomato', label: 'Tomato' },
+  { value: 'chicken', label: 'Chicken' },
+  { value: 'garlic', label: 'Garlic' },
+  { value: 'onion', label: 'Onion' },
+  { value: 'cheese', label: 'Cheese' }
+];
+
+export const LOCAL_INGREDIENT_QUANTITIES = [
+  { value: '5g', label: '5g' },
+  { value: '10g', label: '10g' },
+  { value: '50g', label: '50g' },
+  { value: '150g', label: '150g' },
+  { value: '200g', label: '200g' }
+];
