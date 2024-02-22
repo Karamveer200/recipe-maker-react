@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Lottie from 'react-lottie';
 import emptyLottie from '../../assets/emptyLottie.json';
 import Modal from '../Common/Modal/Modal';
-import UnsavedChangesModal from '../Common/Modal/UnsavedChangesModal';
+import ConfirmModal from '../Common/Modal/ConfirmModal';
 import RecipeAdd from './RecipeAdd/RecipeAdd';
 import TableData, { StyledText } from '../Common/Table/Table';
 import {
@@ -17,6 +17,8 @@ import {
   LOCAL_INGREDIENT_QUANTITIES,
   LOCAL_INGREDIENT_NAMES
 } from '../../utils/constants';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   isArrayReady,
   getUserLocalTimezone,
@@ -29,6 +31,7 @@ import { useGetAllIngredients, GET_ALL_INGREDIENTS } from '../../hooks/useGetAll
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { useInsertRecipe } from '../../hooks/useInsertRecipe';
+import { useDeleteRecipe } from '../../hooks/useDeleteRecipe';
 
 const Recipe = () => {
   const queryClient = useQueryClient();
@@ -47,6 +50,9 @@ const Recipe = () => {
   });
 
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
+
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(null);
+
   const [showSideModal, setShowSideModal] = useState(false);
   const [showAddNewRecipeModal, setShowAddNewRecipeModal] = useState(false);
 
@@ -54,6 +60,18 @@ const Recipe = () => {
     onSuccess: () => {
       toast.success('Your recipe has been saved successfully');
       onSuccessUnsavedModalClick();
+      queryClient.invalidateQueries([GET_ALL_RECIPES]);
+      queryClient.invalidateQueries([GET_ALL_INGREDIENTS]);
+    },
+    onError: () => {
+      toast.error('Action failed');
+    }
+  });
+
+  const { deleteRecipe, isDeleteRecipeLoading } = useDeleteRecipe({
+    onSuccess: () => {
+      toast.success('Your recipe has been deleted');
+      setShowDeleteConfirmModal(null);
       queryClient.invalidateQueries([GET_ALL_RECIPES]);
       queryClient.invalidateQueries([GET_ALL_INGREDIENTS]);
     },
@@ -179,7 +197,24 @@ const Recipe = () => {
     );
   };
 
-  const isLoading = isAllIngredientsFetching || isAllRecipesFetching;
+  const RowActions = ({ item }) => {
+    console.log('item', item);
+
+    return (
+      <div className="flex gap-[15px] w-full justify-center">
+        <div className=" w-[40px] h-[40px] cursor-pointer rounded-full bg-orange-500 flex justify-center items-center hover:bg-gray-600 transition-all ease-in duration-150">
+          <EditRoundedIcon sx={{ fontSize: '27px' }} />
+        </div>
+        <div
+          className="w-[40px] h-[40px] cursor-pointer rounded-full bg-orange-500 flex justify-center items-center hover:bg-gray-600 transition-all ease-in duration-150"
+          onClick={() => setShowDeleteConfirmModal(item)}>
+          <DeleteIcon sx={{ fontSize: '27px' }} />
+        </div>
+      </div>
+    );
+  };
+
+  const isLoading = isAllIngredientsFetching || isAllRecipesFetching || isDeleteRecipeLoading;
 
   const renderTable = () => {
     const headers = [
@@ -212,6 +247,11 @@ const Recipe = () => {
         [ARRAY_KEYS.HEADER]: `Created At (${getUserLocalTimezone()})`,
         [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.CREATED_AT,
         [ARRAY_KEYS.MAX_WIDTH]: '120px'
+      },
+      {
+        [ARRAY_KEYS.HEADER]: 'Actions',
+        [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.ACTIONS,
+        [ARRAY_KEYS.MAX_WIDTH]: '120px'
       }
     ];
 
@@ -233,7 +273,8 @@ const Recipe = () => {
           component: <ShowIngredients item={item[RECIPE_FORM_KEYS.INGREDIENTS]} />
         },
         [RECIPE_FORM_KEYS.UPDATED_AT]: <ShowTime time={item[RECIPE_FORM_KEYS.UPDATED_AT]} />,
-        [RECIPE_FORM_KEYS.CREATED_AT]: <ShowTime time={item[RECIPE_FORM_KEYS.CREATED_AT]} />
+        [RECIPE_FORM_KEYS.CREATED_AT]: <ShowTime time={item[RECIPE_FORM_KEYS.CREATED_AT]} />,
+        [RECIPE_FORM_KEYS.ACTIONS]: <RowActions item={item} />
       };
     });
 
@@ -242,7 +283,8 @@ const Recipe = () => {
         headers={headers}
         bodyData={bodyData}
         onRowClick={onRowClick}
-        isFetching={isLoading}></TableData>
+        isFetching={isLoading}
+      />
     );
   };
 
@@ -277,11 +319,12 @@ const Recipe = () => {
         </Modal>
       )}
 
-      {showUnsavedModal && (
-        <UnsavedChangesModal
+      {!!showDeleteConfirmModal && (
+        <ConfirmModal
           showModal
-          onSuccess={onSuccessUnsavedModalClick}
-          onCancel={onCancelUnsavedModalClick}
+          onSuccess={() => deleteRecipe(showDeleteConfirmModal)}
+          onCancel={() => setShowDeleteConfirmModal(null)}
+          text={`You are about to delete a <strong>${showDeleteConfirmModal.recipeName}</strong> recipe. Are you sure ?`}
         />
       )}
     </div>

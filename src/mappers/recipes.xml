@@ -32,4 +32,9 @@
             R.updated_at DESC, R.recipe_id, I.ingredient_id;
 
     </select>    
+
+    <delete id="deleteRecipeById">
+        DELETE FROM recipes_maker.recipe
+        WHERE recipe_id=#{id}
+    </delete>
 </mapper>

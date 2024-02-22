@@ -23,4 +23,9 @@
         FROM recipes_maker.INGREDIENTS
         ORDER by name ASC
     </select>    
+    
+    <delete id="deleteIngredientsById">
+        DELETE FROM recipes_maker.INGREDIENTS
+        WHERE recipe_id=#{id}
+    </delete>
 </mapper>

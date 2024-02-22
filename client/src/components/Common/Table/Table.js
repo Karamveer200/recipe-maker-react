@@ -9,7 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import classes from './Table.module.css';
-import { ARRAY_KEYS } from '../../../utils/constants';
+import { ARRAY_KEYS, RECIPE_FORM_KEYS } from '../../../utils/constants';
 import Spinner from '../Spinner/Spinner';
 import { isArray, isArrayReady } from '../../../utils/helperFunctions';
 import Typography from '@mui/material/Typography';
@@ -35,7 +35,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }
 }));
 
+const StyledTableCellNoClick = styled(StyledTableCell)(({ theme }) => ({}));
+
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  position: 'relative',
+
   '&:nth-of-type(even)': {
     backgroundColor: '#181f2e'
   },
@@ -44,9 +48,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 
   '&:hover': {
-    backgroundColor: '#441f79',
-    cursor: 'pointer',
-    transition: 'all 100ms ease-in'
+    'td:not(:last-child)': {
+      backgroundColor: '#441f79',
+      cursor: 'pointer',
+      transition: 'all 100ms ease-in'
+    }
   },
 
   // hide last border
@@ -54,6 +60,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0
   }
 }));
+
+const ActionClick = (props) => {
+  const onCellClick = (event) => {
+    event.stopPropagation();
+  };
+
+  return <StyledTableCell {...props} onClick={onCellClick}></StyledTableCell>;
+};
 
 const TableData = ({ headers = [], bodyData = [], isFetching = false, onRowClick }) => {
   const isDataFound = isArray(bodyData);
@@ -94,7 +108,7 @@ const TableData = ({ headers = [], bodyData = [], isFetching = false, onRowClick
             <TableBody>
               {bodyData.map((row, index) => {
                 const rowsArray = Object.keys(row);
-
+                console.log('row', row);
                 return (
                   <StyledTableRow key={index} onClick={() => onRowClick?.(row)}>
                     {isArrayReady(rowsArray)?.map((item, rowIndex) => {
@@ -115,6 +129,18 @@ const TableData = ({ headers = [], bodyData = [], isFetching = false, onRowClick
                       }
 
                       const dataText = row[headers?.[rowIndex]?.[ARRAY_KEYS.VALUE]];
+
+                      if (item === RECIPE_FORM_KEYS.ACTIONS) {
+                        return (
+                          <ActionClick
+                            align="center"
+                            key={rowIndex}
+                            className={` ${classes.borders} ${classes.fontSize14}`}
+                            style={maxWidth ? { maxWidth: maxWidth } : {}}>
+                            {dataText}
+                          </ActionClick>
+                        );
+                      }
 
                       return (
                         <StyledTableCell

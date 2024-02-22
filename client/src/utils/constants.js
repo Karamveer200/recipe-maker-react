@@ -12,7 +12,8 @@ export const RECIPE_FORM_KEYS = {
   NAME: 'name',
   QUANTITY: 'quantity',
   CREATED_AT: 'created_at',
-  UPDATED_AT: 'updated_at'
+  UPDATED_AT: 'updated_at',
+  ACTIONS: 'ACTIONS'
 };
 
 export const ARRAY_KEYS = {

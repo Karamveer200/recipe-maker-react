@@ -24,6 +24,8 @@ const QUERIES = {
   insertIngredients: 'insertIngredients',
   selectAllRecipesWithIngredients: 'selectAllRecipesWithIngredients',
   selectAllIngredients: 'selectAllIngredients',
+  deleteIngredientsByIds: 'deleteIngredientsById',
+  deleteRecipeById: 'deleteRecipeById',
 };
 
 module.exports = {

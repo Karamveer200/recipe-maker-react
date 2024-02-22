@@ -13,9 +13,17 @@ const getAllRecipes = async () =>
 const getAllIngredients = async () =>
   await executeQuery(MAPPER_NAMESPACES.ingredients, QUERIES.selectAllIngredients);
 
+const deleteIngredientsByRecipeId = async (params) =>
+  await executeQuery(MAPPER_NAMESPACES.ingredients, QUERIES.deleteIngredientsByIds, params);
+
+const deleteRecipeByRecipeId = async (params) =>
+  await executeQuery(MAPPER_NAMESPACES.recipes, QUERIES.deleteRecipeById, params);
+
 module.exports = {
   insertNewRecipe,
   insertNewIngredient,
   getAllRecipes,
   getAllIngredients,
+  deleteIngredientsByRecipeId,
+  deleteRecipeByRecipeId,
 };

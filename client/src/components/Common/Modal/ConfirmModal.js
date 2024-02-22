@@ -5,7 +5,7 @@ import 'rodal/lib/rodal.css';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { Button } from '@mui/material';
 
-const UnsavedChangesModal = ({ showModal = false, onSuccess, onCancel }) => {
+const ConfirmModal = ({ showModal = false, onSuccess, onCancel, text = '' }) => {
   return (
     <div>
       <Rodal
@@ -19,9 +19,9 @@ const UnsavedChangesModal = ({ showModal = false, onSuccess, onCancel }) => {
             <ErrorOutlineIcon sx={{ width: '93px', height: '85px', color: 'red' }} />
           </div>
           <div className="flex justify-center items-center mt-[10px]">
-            <div className="text-gray-900 text-sm text-center font-semibold px-10 leading-3">
-              You have unsaved changes. Do you still want to close ?
-            </div>
+            <div
+              className="text-gray-900 text-base text-center font-semibold px-10 leading-3"
+              dangerouslySetInnerHTML={{ __html: text }}></div>
           </div>
           <div className="flex justify-center items-center mt-[30px] gap-[20px] px-10 ">
             <Button
@@ -43,4 +43,4 @@ const UnsavedChangesModal = ({ showModal = false, onSuccess, onCancel }) => {
     </div>
   );
 };
-export default UnsavedChangesModal;
+export default ConfirmModal;

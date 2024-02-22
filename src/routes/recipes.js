@@ -1,5 +1,12 @@
 const { check, validationResult } = require('express-validator');
-const { insertNewRecipe, insertNewIngredient, getAllRecipes, getAllIngredients } = require('../services/recipes');
+const {
+  insertNewRecipe,
+  insertNewIngredient,
+  getAllRecipes,
+  getAllIngredients,
+  deleteRecipeByRecipeId,
+  deleteIngredientsByRecipeId,
+} = require('../services/recipes');
 const {
   formatGetAllRecipesArr,
   formatGetAllIngredientsNamesArr,
@@ -58,6 +65,20 @@ router.get('/allIngredients', async (req, res) => {
       nameOptions: formatGetAllIngredientsNamesArr(rows),
       quantityOptions: formatGetAllIngredientsQuantitiesArr(rows),
     });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.delete('/deleteRecipe/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await deleteIngredientsByRecipeId({ id });
+    await deleteRecipeByRecipeId({ id });
+
+    res.send('Success');
   } catch (err) {
     console.log(err.message);
     res.status(500).send('Server Error');
