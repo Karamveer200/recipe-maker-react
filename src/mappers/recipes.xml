@@ -15,6 +15,15 @@
         RETURNING recipe_id as recipe_id 
     </insert>
 
+    <update id="updateRecipeById">
+        UPDATE recipes_maker.RECIPE
+        SET title = #{title},
+            description = #{description},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE recipe_id = #{id}
+    </update>
+
+
     <select id="selectAllRecipesWithIngredients">
         SELECT
             R.recipe_id,

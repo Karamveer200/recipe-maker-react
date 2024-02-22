@@ -21,7 +21,8 @@ const RecipeAdd = ({
   setFieldValue,
   submitForm,
   isInsertNewRecipeLoading,
-  allIngredients
+  allIngredients,
+  isEditMode
 }) => {
   const [localIngredientName, setLocalIngredientName] = useState('');
   const [localIngredientQuantity, setLocalIngredientQuantity] = useState('');
@@ -153,7 +154,7 @@ const RecipeAdd = ({
       <div className="bg-indigo-100 rounded-lg h-[670px] overflow-hidden">
         {isInsertNewRecipeLoading && <Spinner transparentCenter />}
         <div className="bg-indigo-500 h-[45px] w-full rounded-md text-white font-semibold text-lg px-[20px] flex items-center">
-          Add New Recipe
+          {isEditMode ? 'Edit Recipe' : 'Add New Recipe'}
         </div>
 
         <div style={{ height: '82%' }}>
@@ -230,36 +231,48 @@ const RecipeAdd = ({
                       localIngredientError?.showError &&
                       renderErrorMsg(localIngredientError?.text)}
 
+                    {!values?.[RECIPE_FORM_KEYS.INGREDIENTS]?.length ? (
+                      <div
+                        className={`order-indigo-500 border-dashed border-4 rounded-lg p-[20px] flex 
+                      justify-center items-center bg-gray-500 text-white text-base text-center 
+                      ${
+                        errors[RECIPE_FORM_KEYS.INGREDIENTS] &&
+                        touched[RECIPE_FORM_KEYS.INGREDIENTS] &&
+                        'border-red-600 bg-red-400 font-semibold'
+                      }`}>
+                        No Ingredients added. Please enter them above and click (+) icon to add them
+                      </div>
+                    ) : (
+                      values?.[RECIPE_FORM_KEYS.INGREDIENTS]?.map((item, index) => {
+                        return (
+                          <div
+                            className="grid gap-[10px]"
+                            style={{
+                              gridTemplateColumns: '3fr 2fr'
+                            }}
+                            key={index}>
+                            <TextInput
+                              value={item[RECIPE_FORM_KEYS.NAME]}
+                              onChange={() => {}}
+                              name={RECIPE_FORM_KEYS.NAME}
+                              inputClassName="pointer-events-none bg-gray-700 text-white"
+                            />
+                            <div className="flex gap-[15px] items-center">
+                              <TextInput
+                                value={item[RECIPE_FORM_KEYS.QUANTITY]}
+                                onChange={() => {}}
+                                name={RECIPE_FORM_KEYS.QUANTITY}
+                                inputClassName="pointer-events-none bg-gray-700 text-white"
+                              />
+                              {renderDeleteIngredientBtn(index)}
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
                     {errors[RECIPE_FORM_KEYS.INGREDIENTS] &&
                       touched[RECIPE_FORM_KEYS.INGREDIENTS] &&
                       renderErrorMsg(errors[RECIPE_FORM_KEYS.INGREDIENTS])}
-
-                    {values?.[RECIPE_FORM_KEYS.INGREDIENTS]?.map((item, index) => {
-                      return (
-                        <div
-                          className="grid gap-[10px]"
-                          style={{
-                            gridTemplateColumns: '3fr 2fr'
-                          }}
-                          key={index}>
-                          <TextInput
-                            value={item[RECIPE_FORM_KEYS.NAME]}
-                            onChange={() => {}}
-                            name={RECIPE_FORM_KEYS.NAME}
-                            inputClassName="pointer-events-none bg-gray-700 text-white"
-                          />
-                          <div className="flex gap-[15px] items-center">
-                            <TextInput
-                              value={item[RECIPE_FORM_KEYS.QUANTITY]}
-                              onChange={() => {}}
-                              name={RECIPE_FORM_KEYS.QUANTITY}
-                              inputClassName="pointer-events-none bg-gray-700 text-white"
-                            />
-                            {renderDeleteIngredientBtn(index)}
-                          </div>
-                        </div>
-                      );
-                    })}
                   </div>
                 </div>
               </div>

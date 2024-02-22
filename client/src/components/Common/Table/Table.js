@@ -108,7 +108,7 @@ const TableData = ({ headers = [], bodyData = [], isFetching = false, onRowClick
             <TableBody>
               {bodyData.map((row, index) => {
                 const rowsArray = Object.keys(row);
-                console.log('row', row);
+
                 return (
                   <StyledTableRow key={index} onClick={() => onRowClick?.(row)}>
                     {isArrayReady(rowsArray)?.map((item, rowIndex) => {

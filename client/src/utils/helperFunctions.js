@@ -46,3 +46,17 @@ export const parseLocalStorageToArray = (key) => {
 export const isArrayReady = (arr) => {
   return isArray(arr) ? arr : [];
 };
+
+export const removeDuplicates = (arr) => {
+  const seen = new Set();
+  const filteredArr = arr.filter((obj) => {
+    if (seen.has(obj.value)) {
+      return false;
+    } else {
+      seen.add(obj.value);
+      return true;
+    }
+  });
+
+  return filteredArr;
+};

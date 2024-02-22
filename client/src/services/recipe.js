@@ -12,6 +12,10 @@ export const insertRecipe = (body) => {
   return axios.post(`/recipes/insertRecipe`, body).then((res) => res.data);
 };
 
+export const editRecipeById = (id, body) => {
+  return axios.post(`/recipes/editRecipe/${id}`, body).then((res) => res.data);
+};
+
 export const deleteRecipeById = (id) => {
   return axios.delete(`/recipes/deleteRecipe/${id}`).then((res) => res.data);
 };

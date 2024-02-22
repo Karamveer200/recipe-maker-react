@@ -1,0 +1,6 @@
+.textRoot > p {
+  color: black !important;
+  word-break: break-all;
+  white-space: normal;
+  text-align: right;
+}

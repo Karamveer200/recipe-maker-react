@@ -21,6 +21,7 @@ const MAPPER_NAMESPACES = {
 
 const QUERIES = {
   insertRecipe: 'insertRecipe',
+  updateRecipeById: 'updateRecipeById',
   insertIngredients: 'insertIngredients',
   selectAllRecipesWithIngredients: 'selectAllRecipesWithIngredients',
   selectAllIngredients: 'selectAllIngredients',

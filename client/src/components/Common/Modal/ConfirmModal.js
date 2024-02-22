@@ -5,12 +5,18 @@ import 'rodal/lib/rodal.css';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { Button } from '@mui/material';
 
-const ConfirmModal = ({ showModal = false, onSuccess, onCancel, text = '' }) => {
+const ConfirmModal = ({
+  showModal = false,
+  onSuccess,
+  onCancel,
+  onClose = () => {},
+  text = ''
+}) => {
   return (
     <div>
       <Rodal
         visible={showModal}
-        onClose={() => {}}
+        onClose={onClose}
         animation="zoom"
         className={`${classes.unsavedRoot}`}
         showCloseButton={false}>
@@ -20,7 +26,7 @@ const ConfirmModal = ({ showModal = false, onSuccess, onCancel, text = '' }) => 
           </div>
           <div className="flex justify-center items-center mt-[10px]">
             <div
-              className="text-gray-900 text-base text-center font-semibold px-10 leading-3"
+              className="text-gray-900 text-base text-center font-semibold px-10 leading-3 break-all"
               dangerouslySetInnerHTML={{ __html: text }}></div>
           </div>
           <div className="flex justify-center items-center mt-[30px] gap-[20px] px-10 ">

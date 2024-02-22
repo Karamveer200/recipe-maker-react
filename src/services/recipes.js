@@ -4,6 +4,9 @@ const { executeQuery } = require('../utils/database/database');
 const insertNewRecipe = async (params) =>
   await executeQuery(MAPPER_NAMESPACES.recipes, QUERIES.insertRecipe, params);
 
+const updateRecipeById = async (params) =>
+  await executeQuery(MAPPER_NAMESPACES.recipes, QUERIES.updateRecipeById, params);
+
 const insertNewIngredient = async (params) =>
   await executeQuery(MAPPER_NAMESPACES.ingredients, QUERIES.insertIngredients, params);
 
@@ -26,4 +29,5 @@ module.exports = {
   getAllIngredients,
   deleteIngredientsByRecipeId,
   deleteRecipeByRecipeId,
+  updateRecipeById,
 };
