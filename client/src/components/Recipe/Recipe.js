@@ -192,11 +192,24 @@ const Recipe = () => {
   const ShowIngredients = ({ item }) => {
     if (!item) return <div>---</div>;
 
-    if (item?.length < 2) {
+    if (item?.length === 1) {
       return (
         <StyledText fontSize={14} textAlign="left">
           🔵 {item[0][RECIPE_FORM_KEYS.NAME]}
         </StyledText>
+      );
+    }
+
+    if (item?.length === 2) {
+      return (
+        <>
+          <StyledText fontSize={14} textAlign="left">
+            🔵 {item[0][RECIPE_FORM_KEYS.NAME]}
+          </StyledText>
+          <StyledText fontSize={14} textAlign="left" mt={1}>
+            🔵 {item[1][RECIPE_FORM_KEYS.NAME]}
+          </StyledText>
+        </>
       );
     }
 
@@ -205,8 +218,11 @@ const Recipe = () => {
         <StyledText fontSize={14} textAlign="left">
           🔵 {item[0][RECIPE_FORM_KEYS.NAME]}
         </StyledText>
+        <StyledText fontSize={14} textAlign="left" mt={1}>
+          🔵 {item[1][RECIPE_FORM_KEYS.NAME]}
+        </StyledText>
         <StyledText fontSize={14} mt={1} textAlign="left">
-          + {item.length - 1} More...
+          + {item.length - 2} More...
         </StyledText>
       </>
     );
@@ -256,17 +272,17 @@ const Recipe = () => {
       {
         [ARRAY_KEYS.HEADER]: 'Name',
         [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.RECIPE_NAME,
-        [ARRAY_KEYS.MAX_WIDTH]: '80px'
+        [ARRAY_KEYS.MAX_WIDTH]: '150px'
       },
       {
         [ARRAY_KEYS.HEADER]: 'Ingredients',
         [ARRAY_KEYS.VALUE]: '',
-        [ARRAY_KEYS.MAX_WIDTH]: '80px'
+        [ARRAY_KEYS.MAX_WIDTH]: '130px'
       },
       {
         [ARRAY_KEYS.HEADER]: 'Description',
         [ARRAY_KEYS.VALUE]: RECIPE_FORM_KEYS.DESCRIPTION,
-        [ARRAY_KEYS.MAX_WIDTH]: '200px'
+        [ARRAY_KEYS.MAX_WIDTH]: '130px'
       },
       {
         [ARRAY_KEYS.HEADER]: `Last Updated (${getUserLocalTimezone()})`,
@@ -298,10 +314,6 @@ const Recipe = () => {
         [RECIPE_FORM_KEYS.DESCRIPTION]: (
           <StyledText fontSize={14}>{item[RECIPE_FORM_KEYS.DESCRIPTION]}</StyledText>
         ),
-        [ARRAY_KEYS.DISPLAY_FN]: {
-          [ARRAY_KEYS.VALUE]: item[RECIPE_FORM_KEYS.INGREDIENTS],
-          component: <ShowIngredients item={item[RECIPE_FORM_KEYS.INGREDIENTS]} />
-        },
         [RECIPE_FORM_KEYS.UPDATED_AT]: <ShowTime time={item[RECIPE_FORM_KEYS.UPDATED_AT]} />,
         [RECIPE_FORM_KEYS.CREATED_AT]: <ShowTime time={item[RECIPE_FORM_KEYS.CREATED_AT]} />,
         [RECIPE_FORM_KEYS.ACTIONS]: <RowActions item={item} />
