@@ -27,7 +27,7 @@ app.get('*', (req, res) => {
 });
 
 const PORT = configurations.PORT || 3000;
-console.log('configurations', configurations);
+
 app.listen(PORT, function () {
   console.log(`Server started on PORT ${PORT}`);
 });

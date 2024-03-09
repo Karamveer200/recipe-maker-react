@@ -23,7 +23,7 @@ const createTcpPool = async (config) => {
   const dbPass = await getDynamicEnv(configurations.dbPassword);
   const name = await getDynamicEnv(configurations.database);
   const host = await getDynamicEnv(configurations.dbHost);
-  console.log('dbUser', dbUser, dbPass, name, host);
+
   const dbConfig = {
     client: 'pg',
     connection: {
