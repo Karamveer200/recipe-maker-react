@@ -26,8 +26,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/client/build/index.html'));
 });
 
-const PORT = configurations.PORT || 8080;
-
+const PORT = configurations.PORT || 3000;
+console.log('configurations', configurations);
 app.listen(PORT, function () {
   console.log(`Server started on PORT ${PORT}`);
 });

@@ -4,12 +4,9 @@
   "description": "",
   "scripts": {
     "start": "node server.js",
-    "clientBuildProd": "cd client && npm install --force && npm run build",
-    "clientBuildTesting": "cd client && npm install --force && npm run testBuild",
     "server": "set NODE_ENV=development&&nodemon server",
-    "startNftMinter": "set NODE_ENV=development&&nodemon src/services/nftMinter.js",
     "client": "npm run startLocal --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "set NODE_ENV=production&&nodemon server"
   },
   "author": "Karamveer Singh",
   "license": "ISC",

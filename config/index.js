@@ -9,6 +9,6 @@ module.exports = Object.freeze({
   database: process.env.DATABASE,
   dbHost: process.env.DB_HOST,
   dbPort: process.env.DB_PORT,
-  NODE_ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
+  NODE_ENV: env,
 });
