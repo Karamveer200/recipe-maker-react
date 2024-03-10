@@ -1,5 +1,4 @@
 const configurations = require('../../../config');
-const { NODE_ENVS } = require('../constants');
 const { getDynamicEnv } = require('../helperFunctions');
 
 const getPoolConfigurations = async () => {
@@ -17,8 +16,6 @@ const getPoolConfigurations = async () => {
 };
 
 const createTcpPool = async (config) => {
-  // const dbSocketAddr = configurations.dbHost?.split(':');
-
   const dbUser = await getDynamicEnv(configurations.dbUser);
   const dbPass = await getDynamicEnv(configurations.dbPassword);
   const name = await getDynamicEnv(configurations.database);

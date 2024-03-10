@@ -2,11 +2,12 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const path = require('path');
-const { initializePgConnection, loadBatisMappers } = require('./src/utils/database/database');
+const { initializePgConnection, loadBatisMappers, executeDbSetupQuery } = require('./src/utils/database/database');
 const configurations = require('./config');
 
 loadBatisMappers();
 initializePgConnection();
+executeDbSetupQuery();
 
 app.use(cors());
 

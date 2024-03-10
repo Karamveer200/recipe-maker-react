@@ -65,6 +65,41 @@ const executeQuery = async (mapperNamespace, sqlId, params = {}) => {
   }
 };
 
+const executeDbSetupQuery = async (mapperNamespace, sqlId, params = {}) => {
+  console.log('Executing Db Setup Query');
+
+  try {
+    const connection = await getDbConnection();
+    // Define your SQL query for creating schema and tables
+    const createSchemaAndTablesSQL = `
+ CREATE SCHEMA IF NOT EXISTS recipes_maker;
+
+ CREATE TABLE IF NOT EXISTS recipes_maker.RECIPE (
+   recipe_id     SERIAL PRIMARY KEY,
+   title         TEXT NOT NULL,
+   description   TEXT NOT NULL,
+   created_at    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+   updated_at    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+ );
+
+ CREATE TABLE IF NOT EXISTS recipes_maker.INGREDIENTS (
+   ingredient_id SERIAL PRIMARY KEY,
+   recipe_id     INTEGER NOT NULL,
+   name          TEXT NOT NULL,
+   quantity      TEXT NOT NULL,
+   FOREIGN KEY (recipe_id) REFERENCES recipes_maker.RECIPE(recipe_id)
+ );
+`;
+
+    // Execute the SQL query
+    await connection.raw(createSchemaAndTablesSQL);
+    console.log('Schema and tables created/verified successfully');
+  } catch (error) {
+    console.log(`Database Error: ${error}`);
+    throw new Error();
+  }
+};
+
 const loadBatisMappers = () => {
   let files = fs.readdirSync(`./src/mappers`);
 
@@ -78,4 +113,4 @@ const loadBatisMappers = () => {
   console.log(`Mappers initialized successfully`);
 };
 
-module.exports = { initializePgConnection, executeQuery, loadBatisMappers };
+module.exports = { initializePgConnection, executeQuery, loadBatisMappers, executeDbSetupQuery };
